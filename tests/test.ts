@@ -22,7 +22,8 @@ describe("Set of tests", function() {
             .send();
         console.log("User info returned!");
         expect(getUsersInfoResp.body).to.have.property(`username`);
-        expect(getUsersInfoResp.body).to.not.have.property(`Forbidden`);
+        expect(getUsersInfoResp.body).not.have.property(`Forbidden`);
+        expect(getUsersInfoResp.body).not.have.property(`error`);
     });
 
     it("NEGATIVE: Should return Error", async function() {
@@ -36,6 +37,7 @@ describe("Set of tests", function() {
             .send();
             try {
                 expect(getUsersInfoResp).to.have.property(`username`);
+                expect(getUsersInfoResp.body).not.have.property(`error`);
                 console.log("User info returned!");
             }
             catch(err){
@@ -70,7 +72,9 @@ describe("Set of tests", function() {
             .send();
         console.log("User deleted!");
         expect(deleteUserResponse.body).to.have.property(`_id`);
-        expect(deleteUserResponse.body).to.not.have.property(`Forbidden`);
+        expect(deleteUserResponse.body).not.have.property(`Forbidden`);
+        expect(deleteUserResponse.body).not.have.property(`error`);
+        
         });  
 
     it("NEGATIVE: Should fail deletion of the new User", async function() {
@@ -96,7 +100,8 @@ describe("Set of tests", function() {
                 .send();
             try {
             expect(deleteUserResponse.body).to.have.property(`_id`);
-            expect(deleteUserResponse.body).to.not.have.property(`Forbidden`);
+            expect(deleteUserResponse.body).not.have.property(`Forbidden`);
+            expect(deleteUserResponse.body).not.have.property(`error`);
             console.log("User deleted!");
             }
             catch(err){
@@ -127,7 +132,8 @@ describe("Set of tests", function() {
         .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})        
         .send();
         expect(registerUserResponse.body).to.have.property(`id`);  
-        expect(registerUserResponse.body).to.not.have.property(`Forbidden`);
+        expect(registerUserResponse.body).not.have.property(`Forbidden`);
+        expect(registerUserResponse.body).not.have.property(`error`);
     }); 
 
     it("Get a Users list", async function() {
@@ -144,6 +150,7 @@ describe("Set of tests", function() {
         .send();
         console.log("Users list returned!");
         expect(getUsersListResp.body).not.empty;
+        expect(getUsersListResp.body).not.have.property(`error`);
         console.log("User info returned!", getUsersListResp);
         });
 
