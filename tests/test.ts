@@ -1,9 +1,8 @@
 import {Request} from "../constructor/request";
 import * as faker from "faker";
 import {expect} from "chai";
-const baseUrl = "http://ip-5236.sunline.net.ua:30020";
-const adminEmail = "test@test.com";
-const pass = "123456";
+import {Creds} from "../constructor/creds";
+let cred = new Creds; 
 
 
 describe("Set of tests", function() {
@@ -46,15 +45,15 @@ describe("Set of tests", function() {
     });
 
     it("Should create && delete new User", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
             .method('POST')
-            .body({email: adminEmail,
-                   password: pass
+            .body({email: cred.adminEmail,
+                   password: cred.pass
                 })
             .send();
         console.log("Login successful!");
         //create a New User
-        let createUserResponse = await new Request(`${baseUrl}/api/users`)
+        let createUserResponse = await new Request(`${cred.baseUrl}/api/users`)
             .method("POST")
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .body({username: "MyUserForDeletion",
@@ -66,7 +65,7 @@ describe("Set of tests", function() {
         console.log("User created!");
         const newUsersID = `${createUserResponse.body._id}`
         //Delete the User
-        let deleteUserResponse = await new Request(`${baseUrl}/api/users/${newUsersID}`)
+        let deleteUserResponse = await new Request(`${cred.baseUrl}/api/users/${newUsersID}`)
             .method("DELETE")
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .send();
@@ -77,13 +76,13 @@ describe("Set of tests", function() {
         });  
 
     it("NEGATIVE: Should fail deletion of the new User", async function() {
-            let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+            let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
                 .method('POST')
-                .body({email: adminEmail,password: pass})
+                .body({email: cred.adminEmail,password: cred.pass})
                 .send();
             console.log("Login successful!");
             //create a New User
-            let createUserResponse = await new Request(`${baseUrl}/api/users`)
+            let createUserResponse = await new Request(`${cred.baseUrl}/api/users`)
                 .method("POST")
                 .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
                 .body({username: faker.internet.userName(),
@@ -93,7 +92,7 @@ describe("Set of tests", function() {
                 .send();
             const newUsersID = `${createUserResponse.body._id}`
             //Delete the User -- incorrect ID
-            let deleteUserResponse = await new Request(`${baseUrl}/api/users/incorrectID123456`)
+            let deleteUserResponse = await new Request(`${cred.baseUrl}/api/users/incorrectID123456`)
                 .method("DELETE")
                 .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
                 .send();
@@ -110,14 +109,14 @@ describe("Set of tests", function() {
             });
           
     it("Should register new User", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
             .method('POST')
-            .body({email: adminEmail,
-                   password: pass
+            .body({email: cred.adminEmail,
+                   password: cred.pass
                 })
             .send();
         console.log("Login successful!");
-        let registerUserResponse = await new Request(`${baseUrl}/users/register`)
+        let registerUserResponse = await new Request(`${cred.baseUrl}/users/register`)
         .method("POST")
         .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
         .body({username: faker.internet.userName(),
@@ -127,7 +126,7 @@ describe("Set of tests", function() {
         .send(); 
             //get the Information about the new User
         const newUsersID = `${registerUserResponse.body.id}`
-        let getNewUserInfo = await new Request(`${baseUrl}/api/users/${newUsersID}`)
+        let getNewUserInfo = await new Request(`${cred.baseUrl}/api/users/${newUsersID}`)
         .method("GET")
         .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})        
         .send();
@@ -137,14 +136,14 @@ describe("Set of tests", function() {
     }); 
 
     it("Get a Users list", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
             .method('POST')
-            .body({email: adminEmail,
-                   password: pass
+            .body({email: cred.adminEmail,
+                   password: cred.pass
                 })
             .send();
         console.log("Login successful!");
-        let getUsersListResp = await new Request(`${baseUrl}/api/users`)
+        let getUsersListResp = await new Request(`${cred.baseUrl}/api/users`)
         .method("GET")
         .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
         .send();
@@ -155,14 +154,14 @@ describe("Set of tests", function() {
         });
 
     it("NEGATIVE: Get a Users list", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
                 .method('POST')
-                .body({email: adminEmail,
-                       password: pass
+                .body({email: cred.adminEmail,
+                       password: cred.pass
                     })
                 .send();
             console.log("Login successful!");
-            let getUsersListResp = await new Request(`${baseUrl}/api/users`)
+            let getUsersListResp = await new Request(`${cred.baseUrl}/api/users`)
             .method("GET")
             .headers({Authorization: "IncorrectToken"})
             .send();
@@ -172,9 +171,7 @@ describe("Set of tests", function() {
             }
          catch(err){
             console.log("User list NOT returned!");
-            throw(err);            
-            }
-
+            throw(err);}
             });
     });
 
