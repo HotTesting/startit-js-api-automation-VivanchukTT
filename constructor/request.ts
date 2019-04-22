@@ -33,6 +33,14 @@ export class Request {
         this.options.headers = headers;
         return this;
     }
+    public auth(token: string) {
+        if (token) {
+            this.options.auth = {
+                bearer: token
+            };
+        }
+        return this;
+    }
     public cookies(cookiesJar) {
         this.options.jar = cookiesJar;
         return this;

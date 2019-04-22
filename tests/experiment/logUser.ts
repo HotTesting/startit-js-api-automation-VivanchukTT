@@ -13,8 +13,7 @@ export class Login {
         }
     );
     console.log("Login successful!");
-    // let token = await `Bearer ${adminLoginResp.body.token}`
-    console.log("Token 1", adminLoginResp);
+        
     
     };
 };

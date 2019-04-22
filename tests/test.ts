@@ -1,4 +1,3 @@
-import * as request from "request-promise-native";
 import {Request} from "../constructor/request";
 import * as faker from "faker";
 import {expect} from "chai";
@@ -41,7 +40,8 @@ describe("Set of tests", function() {
                 console.log("User info returned!");
             }
             catch(err){
-                console.log("User info NOT returned!");  
+                console.log("User info NOT returned!"); 
+                throw(err); 
             }
     });
 
@@ -74,7 +74,6 @@ describe("Set of tests", function() {
         expect(deleteUserResponse.body).to.have.property(`_id`);
         expect(deleteUserResponse.body).not.have.property(`Forbidden`);
         expect(deleteUserResponse.body).not.have.property(`error`);
-        
         });  
 
     it("NEGATIVE: Should fail deletion of the new User", async function() {
@@ -106,6 +105,7 @@ describe("Set of tests", function() {
             }
             catch(err){
             console.log("User NOT deleted!");
+            throw(err);
             }
             });
           
@@ -172,6 +172,7 @@ describe("Set of tests", function() {
             }
          catch(err){
             console.log("User list NOT returned!");
+            throw(err);            
             }
 
             });
