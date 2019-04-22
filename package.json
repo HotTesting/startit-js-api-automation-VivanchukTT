@@ -1,28 +1,35 @@
 {
   "name": "startit-js-api-automation",
   "version": "1.0.0",
-  "description": "StartIT demo project for students",
+  "description": "Test VI",
   "scripts": {
     "test": "mocha --opts mocha.opts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Xotabu4/demo.git"
+    "url": ""
   },
-  "author": "Oleksandr Khotemskyi <xotabu4@gmail.com>",
-  "license": "MIT",
+  "author": "VI",
+  "license": "",
   "dependencies": {
     "@types/chai": "*",
+    "@types/faker": "*",
     "@types/mocha": "*",
+    "@types/mongoose": "*",
     "@types/node": "*",
     "@types/request": "*",
     "@types/request-promise-native": "*",
     "chai": "^4.2.0",
+    "chai-json-schema-ajv": "^4.0.0",
+    "@types/chai-json-schema": "^1.4.4",
     "faker": "^4.1.0",
     "mocha": "^6.1.4",
+    "mongoose": "^5.5.0",
+    "raml-1-parser": "^1.1.52",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "ts-node": "^8.0.3",
-    "typescript": "^3.4.2"
+    "typescript": "^3.4.2",
+    "uri-templates": "^0.2.0"
   }
 }

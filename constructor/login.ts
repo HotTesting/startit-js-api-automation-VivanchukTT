@@ -25,16 +25,10 @@ export class UsersController {
             return adminLoginResp.body;
     }
     async createUser(email, password, username) {
-        const userCreateResp = await new Request(
-            `${this.baseURL}/api/users`
-        )
+        const userCreateResp = await new Request(`${this.baseURL}/api/users`)
             .method("POST")
             .auth(this.token)
-            .body({
-                email: email,
-                password: password,
-                username: username
-            })
+            .body({email: email,password: password,username: username})
             .send();
         return userCreateResp.body
     }

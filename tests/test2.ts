@@ -1,11 +1,15 @@
 import {Request} from "../constructor/request";
 import * as faker from "faker";
-import {expect} from "chai";
+import * as chai from "chai";
 const baseUrl = "http://ip-5236.sunline.net.ua:30020";
 const adminEmail = "test@test.com";
 const pass = "123456";
 const userEmail = "ivanchuk.viktoria@gmail.com";
 const userPass = "Qwerty123";
+chai.use(require("chai-json-schema-ajv"));
+ import {loginSchema} from "../tests/schemas"
+const expect = chai.expect;
+
 
 
 describe("Set of tests", function() {
@@ -15,6 +19,8 @@ describe("Set of tests", function() {
             .body({email: adminEmail,password: pass})
             .send();
             console.log("Login successful!");
+            const loginResp = await adminLoginResp.body;
+            expect(loginResp).to.be.jsonSchema(loginSchema);
 
         let userLoginResp = await new Request(`${baseUrl}/users/login`)
             .method('POST')
@@ -70,7 +76,6 @@ describe("Set of tests", function() {
             .method('GET')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .send();
-        console.log("Boards of User was returned!");   
-
+            console.log("Boards of User was returned!");   
     });
 })
