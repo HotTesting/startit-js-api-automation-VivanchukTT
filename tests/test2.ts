@@ -1,81 +1,79 @@
 import {Request} from "../constructor/request";
-import * as faker from "faker";
 import * as chai from "chai";
+import {Schemas} from "./schemas/schemas"
+chai.use(require("chai-json-schema-ajv"));
+const expect = chai.expect;
 const baseUrl = "http://ip-5236.sunline.net.ua:30020";
 const adminEmail = "test@test.com";
 const pass = "123456";
 const userEmail = "ivanchuk.viktoria@gmail.com";
 const userPass = "Qwerty123";
-chai.use(require("chai-json-schema-ajv"));
- import {loginSchema} from "../tests/schemas"
-const expect = chai.expect;
-
+let sch = new Schemas; 
 
 
 describe("Set of tests", function() {
     it("Should create a board-list-card", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${baseUrl}/users/login`)    //LOG-IN AS ADMIN
             .method('POST')
             .body({email: adminEmail,password: pass})
             .send();
-            console.log("Login successful!");
-            const loginResp = await adminLoginResp.body;
-            expect(loginResp).to.be.jsonSchema(loginSchema);
+            expect(adminLoginResp.body).to.be.jsonSchema(sch.loginSchema);
 
-        let userLoginResp = await new Request(`${baseUrl}/users/login`)
+        let userLoginResp = await new Request(`${baseUrl}/users/login`)     //LOG-IN AS A USER
             .method('POST')
             .body({email: userEmail,password: userPass})
             .send();
-            console.log("Login successful!");
             const userID = await `${userLoginResp.body.id}`;
+            expect(userLoginResp.body).to.be.jsonSchema(sch.loginSchema);
 
-        let createBoardResp = await new Request(`${baseUrl}/api/boards`)
+        let createBoardResp = await new Request(`${baseUrl}/api/boards`)    //CREATE A BOARD
             .method('POST')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .body({ title: "BoardTitleVI5",owner: userID,permission:"public",color:"pumpkin"})
             .send();
-            console.log("Board created!");
             const boardID = await `${createBoardResp.body._id}`;
+            expect(createBoardResp.body).to.be.jsonSchema(sch.boardSchema);
         
-        let addSwimlaneResp = await new Request(`${baseUrl}/api/boards/${boardID}/swimlanes`)
+        let addSwimlaneResp = await new Request(`${baseUrl}/api/boards/${boardID}/swimlanes`)   //CREATE A SWIMLINE
             .method('POST')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .body({ title: "Swimlane VI"})
             .send();
-            console.log("Swim added!");
             const swimID = await `${addSwimlaneResp.body._id}`;
+            expect(addSwimlaneResp.body).to.be.jsonSchema(sch.swimSchema);
 
-        let createListsResp = await new Request(`${baseUrl}/api/boards/${boardID}/lists`)
+        let createListsResp = await new Request(`${baseUrl}/api/boards/${boardID}/lists`)       //CREATE A LIST
             .method('POST')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .body({ title: "List VI"})
             .send();
-            console.log("Lists created!");
             const listID = await `${createListsResp.body._id}`;
+            expect(createListsResp.body).to.be.jsonSchema(sch.listSchema);
 
-        let createCardResp = await new Request(`${baseUrl}/api/boards/${boardID}/lists/${listID}/cards`)
+        let createCardResp = await new Request(`${baseUrl}/api/boards/${boardID}/lists/${listID}/cards`)    //CREATE A CARD
             .method('POST')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .body({ title: "Card VI", description: "Card description", authorId: userID, swimlaneId: swimID})
             .send();
-            console.log("Card created!"); 
+            console.log("Card created!");
+            expect(createCardResp.body).to.be.jsonSchema(sch.cardSchema); 
 
-        let getCardsResp = await new Request(`${baseUrl}/api/boards/${boardID}/swimlanes/${swimID}/cards`)
+        let getCardsResp = await new Request(`${baseUrl}/api/boards/${boardID}/swimlanes/${swimID}/cards`)  //GET ALL CARDS
             .method('GET')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .send();
-            console.log("Cards returned!");
+            expect(getCardsResp.body).to.be.jsonSchema(sch.cardsSchema); 
 
-        let getListsResp = await new Request(`${baseUrl}/api/boards/${boardID}/lists`)
+        let getListsResp = await new Request(`${baseUrl}/api/boards/${boardID}/lists`)      //GET ALL LISTS OF BOARD
             .method('GET')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .send();
-            console.log("Lists returned!");
+            expect(getListsResp.body).to.be.jsonSchema(sch.listsSchema); 
 
-        let getBoardsResp = await new Request(`${baseUrl}/api/users/${userID}/boards`)
+        let getBoardsResp = await new Request(`${baseUrl}/api/users/${userID}/boards`)      //GET ALL BOARDS OF USER
             .method('GET')
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .send();
-            console.log("Boards of User was returned!");   
+            expect(getBoardsResp.body).to.be.jsonSchema(sch.boardsSchema);
     });
 })

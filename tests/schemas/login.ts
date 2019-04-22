@@ -1,4 +1,3 @@
-
     export const loginSchema = {
     type: "object",
     properties: {
@@ -12,4 +11,5 @@
             type: "string"
         }
     }
-};
+    };
+   
