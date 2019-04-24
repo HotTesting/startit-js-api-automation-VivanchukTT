@@ -7,14 +7,14 @@ let cred = new Creds;
 
 describe("Set of tests", function() {
     it("Should get the User information", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
             .method('POST')
-            .body({email: adminEmail,
-               password: pass
+            .body({email: cred.adminEmail,
+               password: cred.pass
                 })
             .send();
         console.log("Login successful!");
-        let getUsersInfoResp = await new Request(`${baseUrl}/api/user`)
+        let getUsersInfoResp = await new Request(`${cred.baseUrl}/api/user`)
             .method("GET")
             .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
             .send();
@@ -25,11 +25,11 @@ describe("Set of tests", function() {
     });
 
     it("NEGATIVE: Should return Error", async function() {
-        let adminLoginResp = await new Request(`${baseUrl}/users/login`)
+        let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
             .method('POST')
-            .body({email: adminEmail,password: pass})
+            .body({email: cred.adminEmail,password: cred.pass})
             .send();
-        let getUsersInfoResp = await new Request(`${baseUrl}/api/user`)
+        let getUsersInfoResp = await new Request(`${cred.baseUrl}/api/user`)
             .method("GET")
             .headers({Authorization: "InvalidToken"})
             .send();
@@ -117,23 +117,23 @@ describe("Set of tests", function() {
             .send();
         console.log("Login successful!");
         let registerUserResponse = await new Request(`${cred.baseUrl}/users/register`)
-        .method("POST")
-        .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
-        .body({username: faker.internet.userName(),
-               email: faker.internet.email(undefined, undefined, `ip-5236.sunline.net.ua`),
-               password: faker.internet.password(),                           
-              })
-        .send(); 
+            .method("POST")
+            .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
+            .body({username: faker.internet.userName(),
+                email: faker.internet.email(undefined, undefined, `ip-5236.sunline.net.ua`),
+                password: faker.internet.password(),                           
+                })
+            .send(); 
             //get the Information about the new User
         const newUsersID = `${registerUserResponse.body.id}`
         let getNewUserInfo = await new Request(`${cred.baseUrl}/api/users/${newUsersID}`)
-        .method("GET")
-        .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})        
-        .send();
-        expect(registerUserResponse.body).to.have.property(`id`);  
-        expect(registerUserResponse.body).not.have.property(`Forbidden`);
-        expect(registerUserResponse.body).not.have.property(`error`);
-    }); 
+            .method("GET")
+            .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})        
+            .send();
+            expect(registerUserResponse.body).to.have.property(`id`);  
+            expect(registerUserResponse.body).not.have.property(`Forbidden`);
+            expect(registerUserResponse.body).not.have.property(`error`);
+        }); 
 
     it("Get a Users list", async function() {
         let adminLoginResp = await new Request(`${cred.baseUrl}/users/login`)
@@ -144,12 +144,12 @@ describe("Set of tests", function() {
             .send();
         console.log("Login successful!");
         let getUsersListResp = await new Request(`${cred.baseUrl}/api/users`)
-        .method("GET")
-        .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
-        .send();
+            .method("GET")
+            .headers({Authorization: `Bearer ${adminLoginResp.body.token}`})
+            .send();
         console.log("Users list returned!");
-        expect(getUsersListResp.body).not.empty;
-        expect(getUsersListResp.body).not.have.property(`error`);
+            expect(getUsersListResp.body).not.empty;
+            expect(getUsersListResp.body).not.have.property(`error`);
         console.log("User info returned!", getUsersListResp);
         });
 
